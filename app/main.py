@@ -14,7 +14,7 @@ async def process_comments(youtube_url: str):
         print(settings.YOUTUBE_API_KEY)
         print(video_id)
         comments = youtube_service.fetch_comments(video_id)
-        # notion_service.update_database(comments)
+        notion_service.update_database(comments)
         
         return CommentResponse(
             video_id=video_id,
