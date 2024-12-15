@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+google-api-python-client
+requests
+python-dotenv
+pydantic
+pydantic-settings 
