@@ -5,4 +5,5 @@ requests
 python-dotenv
 pydantic
 pydantic-settings
-selenium 
+selenium
+xmltodict==0.13.0
