@@ -16,6 +16,7 @@ class CoupangService:
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument("--window-size=1920,1080")
+
         
         # User Agent 설정 - 따옴표 제거하여 수정
         options.add_argument('--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
@@ -31,6 +32,8 @@ class CoupangService:
         options.add_argument("--disable-extensions")
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--ignore-ssl-errors')
+
+        
         
         self.driver = None  # 초기화는 fetch_reviews에서 수행
         self.options = options  # options 저장

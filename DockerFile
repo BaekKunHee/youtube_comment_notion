@@ -1,0 +1,32 @@
+FROM python:3.9
+
+# 필수 패키지 설치
+RUN apt-get update && apt-get install -y \
+    wget \
+    curl \
+    unzip \
+    libgbm1 \
+    libnss3 \
+    fonts-liberation \
+    xfonts-base \
+    xfonts-75dpi
+
+# Chrome 설치
+RUN wget -qO - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable
+
+# Chromedriver 설치
+RUN CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
+    wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" && \
+    unzip chromedriver_linux64.zip -d /usr/local/bin/ && \
+    rm chromedriver_linux64.zip
+
+# Python 패키지 설치
+COPY requirements.txt /app/requirements.txt
+WORKDIR /app
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 앱 실행
+CMD ["python", "app.py"]
