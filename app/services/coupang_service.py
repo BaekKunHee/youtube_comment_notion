@@ -34,9 +34,12 @@ class CoupangService:
         options.add_argument('--ignore-ssl-errors')
 
         
+
+        
         
         self.driver = None  # 초기화는 fetch_reviews에서 수행
         self.options = options  # options 저장
+        self.service = Service(executable_path="/usr/local/bin/chromedriver")
 
     def fetch_reviews(self, product_url: str) -> List[Review]:
         """
@@ -51,7 +54,7 @@ class CoupangService:
         reviews = []
         try:
             # 드라이버 초기화
-            self.driver = webdriver.Chrome(options=self.options)
+            self.driver = webdriver.Chrome(service= self.service,options=self.options)
             
             # 웹드라이버 속성 변경으로 봇 감지 회피
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
