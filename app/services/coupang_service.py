@@ -34,7 +34,7 @@ class CoupangService:
         options.add_argument('--ignore-ssl-errors')
 
         # Browserless WebSocket URL 설정 (환경 변수 사용)
-        self.browserless_url = 'https://browserless-production-ebd4.up.railway.app'  # Railway 환경 변수에서 불러오기
+        self.browserless_url = 'https://browserless-production-ebd4.up.railway.app?token=' + os.getenv('BROWSERLESS_TOKEN')  # Railway 환경 변수에서 불러오기
         if not self.browserless_url:
             raise ValueError("BROWSERLESS_URL 환경 변수가 설정되지 않았습니다.")
 
