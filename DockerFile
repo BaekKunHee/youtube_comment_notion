@@ -9,7 +9,11 @@ RUN apt-get update && apt-get install -y \
     libnss3 \
     fonts-liberation \
     xfonts-base \
-    xfonts-75dpi
+    xfonts-75dpi \
+    xvfb \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libnss3
 
 # Chrome 설치
 RUN wget -qO - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -17,16 +21,17 @@ RUN wget -qO - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
     && apt-get update \
     && apt-get install -y google-chrome-stable
 
-# Chromedriver 설치
-RUN CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
+# Chromedriver 설치 (버전 고정 및 실행 권한 추가)
+RUN CHROMEDRIVER_VERSION=133.0.6943.98 && \
     wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" && \
     unzip chromedriver_linux64.zip -d /usr/local/bin/ && \
-    rm chromedriver_linux64.zip
+    rm chromedriver_linux64.zip && \
+    chmod +x /usr/local/bin/chromedriver
 
 # Python 패키지 설치
 COPY requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 앱 실행
-CMD ["python", "app.py"]
+# 앱 실행 (xvfb 사용 가능)
+CMD ["xvfb-run", "python", "app.py"]
