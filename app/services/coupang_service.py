@@ -1,3 +1,6 @@
+import os
+import time
+import random
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -5,8 +8,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from ..schemas.models import Review
 from typing import List
-import time
-import random
 
 class CoupangService:
     def __init__(self):
@@ -17,14 +18,13 @@ class CoupangService:
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument("--window-size=1920,1080")
 
-        
         # User Agent 설정 - 따옴표 제거하여 수정
         options.add_argument('--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-        
+
         # 추가적인 anti-bot 우회 설정
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)
-        
+
         # 추가 설정으로 봇 감지 회피
         options.add_argument("--disable-gpu")
         options.add_argument("--lang=ko_KR")
@@ -33,13 +33,13 @@ class CoupangService:
         options.add_argument('--ignore-certificate-errors')
         options.add_argument('--ignore-ssl-errors')
 
-        
+        # Browserless WebSocket URL 설정 (환경 변수 사용)
+        self.browserless_url = 'https://browserless-production-ebd4.up.railway.app'  # Railway 환경 변수에서 불러오기
+        if not self.browserless_url:
+            raise ValueError("BROWSERLESS_URL 환경 변수가 설정되지 않았습니다.")
 
-        
-        
         self.driver = None  # 초기화는 fetch_reviews에서 수행
         self.options = options  # options 저장
-        self.service = Service(executable_path="/usr/local/bin/chromedriver")
 
     def fetch_reviews(self, product_url: str) -> List[Review]:
         """
@@ -53,22 +53,25 @@ class CoupangService:
         """
         reviews = []
         try:
-            # 드라이버 초기화
-            self.driver = webdriver.Chrome(service= self.service,options=self.options)
-            
+            # Browserless를 사용하여 원격 크롬 실행
+            self.driver = webdriver.Remote(
+                command_executor=self.browserless_url,
+                options=self.options
+            )
+
             # 웹드라이버 속성 변경으로 봇 감지 회피
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            
+
             # 쿠키 및 캐시 초기화
             self.driver.delete_all_cookies()
-            
+
             # 페이지 로드
             self.driver.get(product_url)
             time.sleep(5)
-            
+
             # 랜덤한 마우스 움직임 시뮬레이션
             self.simulate_human_behavior()
-            
+
             # 리뷰 탭으로 이동
             try:
                 review_tab = self.driver.find_element(By.ID, "pdpReviewSection")
@@ -87,11 +90,11 @@ class CoupangService:
                 print("Trying alternative selector...")
                 review_section = self.driver.find_element(By.CSS_SELECTOR, "section.js_reviewArticleListContainer")
                 print("Found review section with alternative selector")
-            
+
             # 모든 리뷰 article 요소 찾기
             review_elements = self.driver.find_elements(By.TAG_NAME, "article")[:10]
             print(f"Found {len(review_elements)} reviews")
-            
+
             for review in review_elements:
                 try:
                     # 별점 추출
@@ -125,7 +128,7 @@ class CoupangService:
 
         except Exception as e:
             print(f"Error during review fetch: {str(e)}")
-        
+
         finally:
             try:
                 if self.driver:
@@ -133,7 +136,7 @@ class CoupangService:
                     self.driver = None
             except Exception as e:
                 print(f"Error closing driver: {str(e)}")
-        
+
         return reviews
 
     def simulate_human_behavior(self):
@@ -144,11 +147,11 @@ class CoupangService:
                 random_scroll = f"window.scrollTo(0, {random.randint(100, 700)});"
                 self.driver.execute_script(random_scroll)
                 time.sleep(random.uniform(0.5, 1.5))
-            
+
             # 페이지 중간까지 스크롤
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight / 2);")
             time.sleep(2)
-            
+
             # 리뷰 섹션까지 스크롤
             try:
                 review_section = self.driver.find_element(By.ID, "pdpReviewSection")
@@ -156,7 +159,7 @@ class CoupangService:
                 time.sleep(2)
             except:
                 print("Review section not found during scrolling")
-            
+
         except Exception as e:
             print(f"Error in human behavior simulation: {str(e)}")
 
@@ -166,4 +169,4 @@ class CoupangService:
             if self.driver:
                 self.driver.quit()
         except:
-            pass 
+            pass

@@ -9,10 +9,11 @@ from .config import settings
 import uvicorn
 
 app = FastAPI()
+
+# 다른 서비스들은 상태를 유지하지 않으므로 전역 변수로 유지
 youtube_service = YouTubeService()
 notion_service = NotionService()
 legal_service = LegalService()
-coupang_service = CoupangService()
 
 @app.post("/process-comments/", response_model=CommentResponse)
 async def process_comments(youtube_url: str):
@@ -69,6 +70,8 @@ async def process_legal():
 @app.post("/coupang")
 async def process_coupang(product_url: str):
     try:
+        # 요청마다 새로운 CoupangService 인스턴스 생성
+        coupang_service = CoupangService()
         reviews = coupang_service.fetch_reviews(product_url)
         return {
             "message": "Reviews fetched successfully",
