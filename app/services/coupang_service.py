@@ -1,9 +1,10 @@
-import os
 import time
+import chromedriver_binary  # ChromeDriver 경로를 자동으로 설정
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
 from ..schemas.models import Review
 from ..config import settings
 from typing import List
