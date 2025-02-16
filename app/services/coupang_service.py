@@ -28,7 +28,7 @@ class CoupangService:
         options.add_experimental_option("useAutomationExtension", False)
         
           # ChromeDriver 경로 설정
-        chrome_driver_path = "/usr/bin/chromedriver"
+        chrome_driver_path = "/usr/local/bin/chromedriver"
         if not os.path.exists(chrome_driver_path):
             raise FileNotFoundError(f"ChromeDriver not found at {chrome_driver_path}")
       
