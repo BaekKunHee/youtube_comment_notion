@@ -5,6 +5,7 @@ from .services.legal_service import LegalService
 from .schemas.models import CommentResponse, ApiResponseBody
 from .services.coupang_service import CoupangService
 from .config import settings
+import subprocess
 
 import uvicorn
 
@@ -80,3 +81,19 @@ async def process_coupang(product_url: str):
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e)) 
+    
+@app.get("/check-chromedriver")
+async def check_chromedriver():
+    try:
+        result = subprocess.run(["ls", "-lah", "/usr/local/bin/chromedriver"], capture_output=True, text=True)
+        return {"chromedriver_exists": result.stdout}
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/chromedriver-version")
+async def chromedriver_version():
+    try:
+        result = subprocess.run(["/usr/local/bin/chromedriver", "--version"], capture_output=True, text=True)
+        return {"chromedriver_version": result.stdout}
+    except Exception as e:
+        return {"error": str(e)}
