@@ -15,6 +15,8 @@ class CoupangService:
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")  # GPU 가속 비활성화 (서버 환경)
+        options.add_argument("--remote-debugging-port=9222")  # 디버깅 포트 설정
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument("--window-size=1920,1080")
         
