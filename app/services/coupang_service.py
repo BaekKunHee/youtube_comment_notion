@@ -1,6 +1,6 @@
 import time
-import chromedriver_binary  # ChromeDriver 경로를 자동으로 설정
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -18,7 +18,6 @@ class CoupangService:
         options.add_argument("--disable-gpu")  # GPU 가속 비활성화 (서버 환경)
         options.add_argument("--remote-debugging-port=9222")  # 디버깅 포트 설정
         options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_argument("--window-size=1920,1080")
         
         # User Agent 설정
         options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
@@ -30,8 +29,11 @@ class CoupangService:
         # 추가 설정
         options.add_argument("--disable-gpu")
         options.add_argument("--lang=ko_KR")
+
+        chrome_driver_path = "/usr/local/bin/chromedriver"
+        service = Service(chrome_driver_path)
         
-        self.driver = webdriver.Chrome(options=options)
+        self.driver = webdriver.Chrome(options=options, service=service)
         self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
     def fetch_reviews(self, product_url: str) -> List[Review]:
