@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from ..schemas.models import Review
-from ..config import settings
+import os
 from typing import List
 
 class CoupangService:
@@ -15,9 +15,10 @@ class CoupangService:
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")  # GPU 가속 비활성화 (서버 환경)
         options.add_argument("--remote-debugging-port=9222")  # 디버깅 포트 설정
         options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_argument("--disable-gpu")  # GPU 가속 비활성화 (서버 환경)
+        options.add_argument("--lang=ko_KR")
         
         # User Agent 설정
         options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
@@ -26,11 +27,13 @@ class CoupangService:
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)
         
-        # 추가 설정
-        options.add_argument("--disable-gpu")
-        options.add_argument("--lang=ko_KR")
-
+          # ChromeDriver 경로 설정
         chrome_driver_path = "/usr/local/bin/chromedriver"
+        if not os.path.exists(chrome_driver_path):
+            raise FileNotFoundError(f"ChromeDriver not found at {chrome_driver_path}")
+      
+
+    
         service = Service(chrome_driver_path)
         
         self.driver = webdriver.Chrome(options=options, service=service)
