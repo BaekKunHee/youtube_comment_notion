@@ -29,8 +29,7 @@ class CoupangService:
         
         try:
             # ChromeDriver 경로를 /usr/local/bin으로 변경
-            service = Service('/usr/local/bin/chromedriver')
-            self.driver = webdriver.Chrome(service=service, options=options)
+            self.driver = webdriver.Chrome(options=options)
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         except Exception as e:
             print(f"Error initializing Chrome driver: {str(e)}")
