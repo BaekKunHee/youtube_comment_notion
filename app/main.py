@@ -85,7 +85,7 @@ async def process_coupang(product_url: str):
 @app.get("/check-chromedriver")
 async def check_chromedriver():
     try:
-        result = subprocess.run(["ls", "-lah", "/usr/bin/chromedriver"], capture_output=True, text=True)
+        result = subprocess.run(["ls", "-lah", "/usr/local/bin/chromedriver"], capture_output=True, text=True)
         return {"chromedriver_exists": result.stdout}
     except Exception as e:
         return {"error": str(e)}
@@ -93,7 +93,7 @@ async def check_chromedriver():
 @app.get("/chromedriver-version")
 async def chromedriver_version():
     try:
-        result = subprocess.run(["/usr/bin/chromedriver", "--version"], capture_output=True, text=True)
+        result = subprocess.run(["/usr/local/bin/chromedriver", "--version"], capture_output=True, text=True)
         return {"chromedriver_version": result.stdout}
     except Exception as e:
         return {"error": str(e)}

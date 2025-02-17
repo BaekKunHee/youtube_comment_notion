@@ -1,7 +1,6 @@
 fastapi
 uvicorn
 google-api-python-client
-chromedriver-binary
 requests
 python-dotenv
 pydantic

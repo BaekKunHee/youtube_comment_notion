@@ -15,29 +15,26 @@ class CoupangService:
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--remote-debugging-port=9222")  # 디버깅 포트 설정
-        options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_argument("--disable-gpu")  # GPU 가속 비활성화 (서버 환경)
-        options.add_argument("--lang=ko_KR")
-        
-        # User Agent 설정
+        options.add_argument("--disable-gpu")
+        options.add_argument('--disable-software-rasterizer')
+        options.add_argument('--disable-extensions')
+        options.add_argument('--disable-infobars')
+        options.add_argument('--remote-debugging-port=9222')
+        options.add_argument('--window-size=1920,1080')
         options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
         
         # Anti-bot 설정
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)
         
-          # ChromeDriver 경로 설정
-        chrome_driver_path = "/usr/bin/chromedriver"
-        if not os.path.exists(chrome_driver_path):
-            raise FileNotFoundError(f"ChromeDriver not found at {chrome_driver_path}")
-      
-
-    
-        service = Service(chrome_driver_path)
-        
-        self.driver = webdriver.Chrome(options=options, service=service)
-        self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+        try:
+            # ChromeDriver 경로를 /usr/local/bin으로 변경
+            service = Service('/usr/local/bin/chromedriver')
+            self.driver = webdriver.Chrome(service=service, options=options)
+            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+        except Exception as e:
+            print(f"Error initializing Chrome driver: {str(e)}")
+            raise e
 
     def fetch_reviews(self, product_url: str) -> List[Review]:
         """
