@@ -106,12 +106,13 @@ def get_chrome_version():
     try:
         # Chrome 옵션 설정
         options = webdriver.ChromeOptions()
-        options.add_argument('--headless')  # 헤드리스 모드로 실행
+        options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         
-        # Chrome 드라이버 초기화
-        service = Service(ChromeDriverManager().install())
+        # Chrome 드라이버 초기화 (chromedriver-py 사용)
+        from chromedriver_py import binary_path
+        service = Service(executable_path=binary_path)
         driver = webdriver.Chrome(service=service, options=options)
         
         # Chrome 버전 가져오기

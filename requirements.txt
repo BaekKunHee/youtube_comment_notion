@@ -8,3 +8,4 @@ pydantic-settings
 selenium==4.18.1
 xmltodict==0.13.0
 webdriver_manager==4.0.1
+chromedriver-py==133.0.6943.98

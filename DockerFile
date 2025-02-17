@@ -23,14 +23,6 @@ RUN wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable
     && rm chrome.deb \
     && google-chrome --version || echo "Chrome installation failed"
 
-# ChromeDriver 다운로드 및 설치 (Chrome 133 버전에 맞는 ChromeDriver 설치)
-RUN wget -O /tmp/chromedriver.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/133.0.6943.98/chromedriver-linux64.zip && \
-    unzip /tmp/chromedriver.zip -d /tmp/ && \
-    mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/ && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm -rf /tmp/chromedriver-linux64 /tmp/chromedriver.zip && \
-    chromedriver --version
-
 # 필요한 패키지 설치
 COPY requirements.txt .
 RUN pip install -r requirements.txt
