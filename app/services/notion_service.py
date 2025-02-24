@@ -4,9 +4,9 @@ from ..schemas.models import Comment
 from typing import List
 
 class NotionService:
-    def __init__(self):
-        self.token = settings.NOTION_TOKEN
-        self.database_id = settings.NOTION_DATABASE_ID
+    def __init__(self, api_key: str, database_id: str):
+        self.token = api_key
+        self.database_id = database_id
         self.headers = {
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json",
