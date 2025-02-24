@@ -87,4 +87,53 @@ class Review(BaseModel):
     rating: Optional[int]
     content: str
     date: str
-    images: List[str] = [] 
+    images: List[str] = []
+    product_name: str
+    writer: str
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.product_name = data.get('product_name', '')
+        self.writer = data.get('writer', '')
+
+    @field_validator("rating", mode="before")
+    @classmethod
+    def validate_rating(cls, value):
+        if value is None or not (1 <= value <= 5):
+            raise ValueError("Rating must be between 1 and 5")
+        return value
+
+    @field_validator("content", mode="before")
+    @classmethod
+    def validate_content(cls, value):
+        if not value:
+            raise ValueError("Content cannot be empty")
+        return value
+
+    @field_validator("date", mode="before")
+    @classmethod
+    def validate_date(cls, value):
+        if not value:
+            raise ValueError("Date cannot be empty")
+        return value
+
+    @field_validator("images", mode="before")
+    @classmethod
+    def validate_images(cls, value):
+        if not isinstance(value, list) or not all(isinstance(img, str) for img in value):
+            raise ValueError("Images must be a list of strings")
+        return value
+
+    @field_validator("product_name", mode="before")
+    @classmethod
+    def validate_product_name(cls, value):
+        if not value:
+            raise ValueError("Product name cannot be empty")
+        return value
+
+    @field_validator("writer", mode="before")
+    @classmethod
+    def validate_writer(cls, value):
+        if not value:
+            raise ValueError("Writer cannot be empty")
+        return value 

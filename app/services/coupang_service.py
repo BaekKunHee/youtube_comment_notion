@@ -54,6 +54,7 @@ class CoupangService:
             self.driver.get(product_url)
             time.sleep(5)
             
+            
             while len(reviews) < review_count:
                 # 리뷰 섹션 찾기
                 review_elements = WebDriverWait(self.driver, 10).until(
@@ -70,6 +71,14 @@ class CoupangService:
                         # 별점
                         rating_div = review.find_element(By.CLASS_NAME, "js_reviewArticleRatingValue")
                         rating = int(rating_div.get_attribute("data-rating"))
+
+                        # 제품명
+                        product_name_element = review.find_element(By.CLASS_NAME, "sdp-review__article__list__info__product-info__name")
+                        product_name = product_name_element.text.strip()
+
+                        # 작성자
+                        writer_element = review.find_element(By.CLASS_NAME, "sdp-review__article__list__info__user")
+                        writer = writer_element.text.strip()
                         
                         # 내용
                         content_element = review.find_element(By.CLASS_NAME, "sdp-review__article__list__review__content")
@@ -88,7 +97,9 @@ class CoupangService:
                                 rating=rating,
                                 content=content,
                                 date=date,
-                                images=image_urls
+                                images=image_urls,
+                                product_name=product_name,
+                                writer=writer
                             ))
                             
                     except Exception as e:

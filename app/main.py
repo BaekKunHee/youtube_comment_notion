@@ -16,10 +16,7 @@ app = FastAPI()
 
 # 다른 서비스들은 상태를 유지하지 않으므로 전역 변수로 유지
 youtube_service = YouTubeService()
-notion_service = NotionService(
-    api_key=settings.NOTION_TOKEN,
-    database_id=settings.NOTION_DATABASE_ID
-)
+notion_service = NotionService()
 legal_service = LegalService()
 
 # @app.post("/process-comments/", response_model=CommentResponse)
@@ -75,10 +72,11 @@ legal_service = LegalService()
 #         raise HTTPException(status_code=400, detail=str(e)) 
 
 @app.post("/coupang")
-async def process_coupang(product_url: str, review_count: int = 5):
+async def process_coupang(product_url: str, api_key: str, database_id: str, review_count: int = 5):
     try:
         coupang_service = CoupangService()
         reviews = coupang_service.fetch_reviews(product_url, review_count)
+        notion_service.update_database(reviews, api_key, database_id)
         return {
             "message": "Reviews fetched successfully",
             "review_count": len(reviews),
